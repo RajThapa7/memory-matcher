@@ -1,8 +1,11 @@
 "use client";
 import { SingleCard } from "@/components";
+import cardDataGenerator from "@/utils/cardDataGenerator";
 import { formatMinAndSec } from "@/utils/formatTime";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useStopwatch } from "react-timer-hook";
+// @ts-ignore
+import useSound from "use-sound";
 
 const cardData = [
   { id: 1, value: 5 },
@@ -29,14 +32,21 @@ export default function Home() {
 
   const { seconds, minutes, pause, reset } = useStopwatch({ autoStart: true });
 
+  const [playGameEndSound] = useSound("/music/congrats.wav", {
+    volume: 0.2,
+  });
+
+  const data = useMemo(() => cardDataGenerator(6), []);
+  console.log(data, "data combined array");
+
   return (
     <>
       <p>Moves: {Math.floor(moves / 2)}</p>
       <p>
         Time: {formatMinAndSec(minutes)}:{formatMinAndSec(seconds)}
       </p>
-      <div className="grid grid-cols-3 gap-2 place-items-center w-fit mx-auto">
-        {cardData.map(({ id, value }) => (
+      <div className="grid grid-cols-4 gap-2 place-items-center w-fit mx-auto">
+        {data.map(({ id, value }) => (
           <SingleCard
             key={id}
             label={value}
@@ -50,6 +60,7 @@ export default function Home() {
             stopTimer={pause}
             totalLength={cardData.length}
             cardId={value}
+            playGameEndSound={playGameEndSound}
           />
         ))}
       </div>

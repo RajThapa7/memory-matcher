@@ -14,6 +14,8 @@ interface ISingleCardProps {
   setMoves: Dispatch<SetStateAction<number>>;
   stopTimer: () => void;
   totalLength: number;
+
+  playGameEndSound: any;
 }
 
 const delay = (timeInMs: number) => {
@@ -24,6 +26,7 @@ export default function SingleCard({
   activeCard,
   setActiveCard,
   cardId,
+  playGameEndSound,
   label,
   matchedValue,
   setMatchedValue,
@@ -35,13 +38,10 @@ export default function SingleCard({
 
   const [play] = useSound("/music/card_flip.ogg");
   const [playSuccess] = useSound("/music/success_sound.wav");
-  const [playGameEnd] = useSound("/music/congrats.wav", {
-    volume: 0.25,
-  });
 
   useEffect(() => {
     if (matchedValue.length === totalLength / 2) {
-      playGameEnd();
+      playGameEndSound();
       stopTimer();
     }
 
@@ -56,7 +56,7 @@ export default function SingleCard({
     activeCard.length,
     label,
     matchedValue,
-    playGameEnd,
+    playGameEndSound,
     setActiveCard,
     setMatchedValue,
     stopTimer,
