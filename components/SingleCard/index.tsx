@@ -1,7 +1,8 @@
 "use client";
-
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ReactCardFlip from "react-card-flip";
+// @ts-ignore
+import useSound from "use-sound";
 
 interface ISingleCardProps {
   activeCard: number[];
@@ -32,8 +33,15 @@ export default function SingleCard({
 }: ISingleCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const [play] = useSound("/music/card_flip.ogg");
+  const [playSuccess] = useSound("/music/success_sound.wav");
+  const [playGameEnd] = useSound("/music/congrats.wav", {
+    volume: 0.25,
+  });
+
   useEffect(() => {
     if (matchedValue.length === totalLength / 2) {
+      playGameEnd();
       stopTimer();
     }
 
@@ -48,6 +56,7 @@ export default function SingleCard({
     activeCard.length,
     label,
     matchedValue,
+    playGameEnd,
     setActiveCard,
     setMatchedValue,
     stopTimer,
@@ -55,6 +64,7 @@ export default function SingleCard({
   ]);
 
   const handleClick = async (label: number) => {
+    play();
     setMoves((prev) => ++prev);
     if (activeCard.length === 2) {
       // do nothing
@@ -64,6 +74,7 @@ export default function SingleCard({
       setIsFlipped(true);
       delay(300).then(() => {
         setMatchedValue((prev) => [...prev, label]);
+        playSuccess();
       });
       setActiveCard([]);
       return;
