@@ -1,19 +1,18 @@
+import theOfficeData from "@/data/theOffice";
+
 const cardDataGenerator = (count: number) => {
   const arr1 = Array.from({ length: count }, (_, v: number) => v + 1).map(
     (value) => ({
-      id: value,
       value,
+      image: theOfficeData[value - 1],
     })
   );
-  const arr2 = Array.from({ length: count }, (_, v: number) => v + 1).map(
-    (value) => ({
-      id: value + count,
-      value,
-    })
-  );
-  const combinedArray = arr1.concat(arr2);
+  const combinedArray = arr1.concat(arr1);
   shuffleArray(combinedArray);
-  return combinedArray;
+  return combinedArray.map((value, index) => ({
+    id: index + 1,
+    value,
+  }));
 };
 
 const shuffleArray = (combinedArray: any[]) => {
